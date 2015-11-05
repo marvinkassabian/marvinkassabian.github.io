@@ -1,36 +1,26 @@
 (function() {
   "use strict";
 
-  VAGABOND.namespace('VAGABOND.SCREEN');
+  VAGABOND.namespace("VAGABOND.SCREEN");
 
   VAGABOND.SCREEN = (function(module) {
 
-    var Map = VAGABOND.MAPS.Map;
+    var Matrix = VAGABOND.MATRIX.Matrix;
 
-    var Screen = Object.create(Map);
-
-    var initProto = Map.init;
+    var Screen = Object.create(Matrix);
 
     Screen.init = function(height, width, x, y) {
       this.originX = x;
       this.originY = y;
-      initProto.call(this, height, width, function() {
-        return ' ';
-      });
+      Matrix.init.call(this, height, width, function() {
+        return " ";
+      }).initGrid();
 
       return this;
     };
 
-    Screen.clear = function(initValueFunc) {
-
-      if (initValueFunc === undefined) {
-        initValueFunc = function() {
-          return ' ';
-        };
-      }
-
-      this.initGrid(initValueFunc);
-    };
+    //TODO: do something with this and Matrix.initGrid
+    Screen.clear = Screen.initGrid;
 
     Screen.move = function(dx, dy) {
       this.originX += dx;
@@ -38,40 +28,45 @@
     };
 
     Screen.isValidMove = function(dx, dy, map) {
-      var offset = this.getOffset();
-      var newX = offset.x + dx;
-      var newY = offset.y + dy;
+      var newX = this.originX + dx;
+      var newY = this.originY + dy;
 
-      return map.isValidCoordinate(newX + this.width, newY + this.height) &&
-          map.isValidCoordinate(newX + this.width, newY) &&
-          map.isValidCoordinate(newX, newY + this.height) &&
+      return map.isValidCoordinate(newX + this.width - 1, newY + this.height - 1) &&
+          map.isValidCoordinate(newX + this.width - 1, newY) &&
+          map.isValidCoordinate(newX, newY + this.height - 1) &&
           map.isValidCoordinate(newX, newY);
     };
 
-    Screen.getOffset = function() {
+    Screen.getOrigin = function() {
       return {
-        x: this.originX - Math.floor(this.width / 2),
-        y: this.originY - Math.floor(this.height / 2)
+        x: this.originX,
+        y: this.originY
       };
     };
 
     Screen.toHTML = function(options) {
-      var i, j, map, tileElement, value;
+      var i;
+      var j;
+      var map;
+      var tileElement;
+      var value;
+
       options = UTIL.extend(options, {
         formatValue: function(value) {
           return value;
         },
+
         formatElement: function(value) {
-          var tileElement = document.createElement('span');
-          tileElement.className = 'tile-' + value;
+          var tileElement = document.createElement("span");
+          tileElement.className = "tile-" + value;
           tileElement.innerHTML = value;
 
           return tileElement;
         }
       });
 
-      map = document.createElement('div');
-      map.className = 'map';
+      map = document.createElement("div");
+      map.className = "screen";
 
       for (i = 0; i < this.height; i++) {
         for (j = 0; j < this.width; j++) {
@@ -80,10 +75,17 @@
 
           map.appendChild(tileElement);
         }
-        map.appendChild(document.createElement('br'));
+
+        map.appendChild(document.createElement("br"));
       }
 
       return map;
+    };
+
+    Screen.renderToElement = function(element) {
+      var screenHTML = this.toHTML();
+
+      element.replaceChild(screenHTML, element.firstChild);
     };
 
     module.Screen = Screen;

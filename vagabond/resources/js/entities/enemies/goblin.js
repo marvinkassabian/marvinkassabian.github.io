@@ -1,7 +1,7 @@
 (function() {
   "use strict";
 
-  VAGABOND.namespace('VAGABOND.ENTITIES.ENEMIES');
+  VAGABOND.namespace("VAGABOND.ENTITIES.ENEMIES");
 
   VAGABOND.ENTITIES.ENEMIES = (function(module) {
 
@@ -9,22 +9,20 @@
 
     var Goblin = Object.create(Monster);
 
-    var initProto = Goblin.init;
-
     Goblin.init = function(x, y, hp) {
-      return initProto.call(this, UTIL.generateUUID(), 'Goblin', x, y, 'G', hp);
+      return Monster.init.call(this, UTIL.generateUUID(), "Goblin", x, y, "%", hp);
     };
 
     Goblin.attack = function() {
-      console.log(this.name, 'attacks!');
+      console.log(this.name, "attacks!");
     };
 
     Goblin.takeTurn = function(level) {
       var possibleMove = [
-        {dx: 1, dy: 0},
-        {dx: 0, dy: 1},
-        {dx: -1, dy: 0},
-        {dx: 0, dy: -1}
+        { dx: 1, dy: 0},
+        { dx: 0, dy: 1},
+        { dx: -1, dy: 0},
+        { dx: 0, dy: -1}
       ];
 
       var move = possibleMove[Math.floor(Math.random() * 4)];

@@ -3,64 +3,45 @@
 
   var Monster = VAGABOND.ENTITIES.Monster;
   var Goblin = VAGABOND.ENTITIES.ENEMIES.Goblin;
-  var HeightMap = VAGABOND.MAPS.HeightMap;
+  var Matrix = VAGABOND.MATRIX.Matrix;
   var Screen = VAGABOND.SCREEN.Screen;
   var Level = VAGABOND.LEVEL.Level;
   var Controls = VAGABOND.CONTROLS.Controls;
+  var Controller = VAGABOND.CONTROLLER.Controller;
+  var ALGORITHMS = VAGABOND.ALGORITHMS;
 
-  var milo = Object.create(Monster).init(0, 'Milo', 4, 4, 'M', 30);
+  var milo = Object.create(Monster).init(0, "Milo", 4, 4, "#", 30);
   var otis = Object.create(Goblin).init(5, 10, 50);
-  var henry = Object.create(Goblin).init(32, 15, 60);
+  var henry = Object.create(Goblin).init(8, 15, 60);
 
-  var size = 129;
-  var heightMap = Object.create(HeightMap).init(size, {
-    upper: 16,
-    lower: 0
-  }).generate(20);
+  var map = Object.create(Matrix).init(129, 129, {
+    formatValue: function(value) {
+      return Math.floor(UTIL.clamp(value, 0, 31)).toString(32);
+    },
+    initValue: function() {
+      return Math.random() > 0.5 ? 15 : 0;
+      //return UTIL.random(6, 26);
+    }
+  }).initGrid();
 
-  var screen = Object.create(Screen).init(20, 80, 40, 20);
+  //ALGORITHMS.diamondSquare(map, 30);
+  //ALGORITHMS.cellularAutomata(map, 1);
 
+  var screen = Object.create(Screen).init(20, 80, 0, 0);
   var controls = Object.create(Controls).init();
-
-  global.controls = controls;
-
-  var level = Object.create(Level).init(heightMap);
-
-  global.screen = screen;
+  var controller = Object.create(Controller).init(controls);
+  var level = Object.create(Level).init(map);
 
   level.addEntity(milo, otis, henry);
 
+  global.screen = screen;
+
+  level.renderTo(screen);
+  screen.renderToElement(document.body);
+
   var func = function() {
 
-    if (controls.eventStack.length > 0) {
-
-      var event = controls.eventStack.pop();
-
-      if (event === 'up') {
-        if (screen.isValidMove(0, -1, heightMap)) {
-          screen.move(0, -1);
-        }
-      } else if (event === 'down') {
-        if (screen.isValidMove(0, 1, heightMap)) {
-          screen.move(0, 1);
-        }
-      } else if (event === 'left') {
-        if (screen.isValidMove(-1, 0, heightMap)) {
-          screen.move(-1, 0);
-        }
-      } else if (event === 'right') {
-        if (screen.isValidMove(1, 0, heightMap)) {
-          screen.move(1, 0);
-        }
-      }
-
-      level.takeTurn();
-      level.renderTo(screen);
-
-      var screenHTML = screen.toHTML();
-
-      document.body.replaceChild(screenHTML, document.body.firstChild);
-    }
+    controller.processInput(screen, milo, map, level);
 
     //TODO: switch UTIL.setTimeout to window.requestAnimationFrame
     UTIL.setTimeout(func, 10);

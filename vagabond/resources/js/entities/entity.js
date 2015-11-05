@@ -1,7 +1,7 @@
 (function() {
   "use strict";
 
-  VAGABOND.namespace('VAGABOND.ENTITIES');
+  VAGABOND.namespace("VAGABOND.ENTITIES");
 
   VAGABOND.ENTITIES = (function(module) {
 
@@ -39,10 +39,9 @@
         return entity.char;
       };
 
-      var offset = screen.getOffset();
+      var offset = screen.getOrigin();
       var offsettedX = this.x - offset.x;
       var offsettedY = this.y - offset.y;
-
 
       if (screen.isValidCoordinate(offsettedX, offsettedY)) {
         screen.set(offsettedX, offsettedY, formatEntity.call(this, this));

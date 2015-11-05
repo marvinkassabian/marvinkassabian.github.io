@@ -1,7 +1,8 @@
 (function() {
   "use strict";
 
-  VAGABOND.namespace('VAGABOND.LEVEL');
+  //TODO: rename to something else, maybe
+  VAGABOND.namespace("VAGABOND.LEVEL");
 
   VAGABOND.LEVEL = (function(module) {
 
