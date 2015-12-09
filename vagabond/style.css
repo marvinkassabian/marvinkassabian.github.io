@@ -10,6 +10,10 @@ body {
   font-size: 0.875em;
 }
 
+strong {
+  font-size: 3em;
+}
+
 .screen, .info, .menu, .event-log {
   overflow: hidden;
   float: left;
