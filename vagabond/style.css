@@ -7,10 +7,10 @@ body {
   font-family: "Consolas", monospace;
   color: green;
   background: #000;
-  font-size: 1em;
+  font-size: 0.875em;
 }
 
-.map, .info, .menu, .log {
+.screen, .info, .menu, .event-log {
   overflow: hidden;
   float: left;
   display: inline-block;
@@ -18,9 +18,16 @@ body {
   margin-bottom: 1em;
 }
 
-.map, .menu {
+.screen, .menu {
+  /* coupled to main.js screen.width*/
   width: 49em;
-  /* prevents map and menu from being highlighted */
+}
+
+.screen {
+  /* coupled to main.js screen.height*/
+  height: 24em;
+  cursor: none;
+  /* prevents screen from being highlighted */
   -webkit-touch-callout: none;
   -webkit-user-select: none;
   -khtml-user-select: none;
@@ -29,17 +36,18 @@ body {
   user-select: none;
 }
 
-.map {
-  cursor: none;
-}
-
 .info {
+  /* not coupled to anything */
   width: 20em;
   clear: right;
 }
 
 .tile {
   background: #080808;
+}
+
+.possible {
+  background: #18454d
 }
 
 .tile-\# {
@@ -54,7 +62,7 @@ body {
   font-weight: bold;
 }
 
-span:hover {
+span.clickable:hover {
   background: #aaa;
 }
 
